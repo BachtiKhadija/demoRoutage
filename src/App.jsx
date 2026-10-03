@@ -1,0 +1,115 @@
+import { useReducer } from "react";
+import {BrowserRouter,Route,Routes} from "react-router-dom";
+import Navbar from "./Components/Navbar";
+import ProductList from "./Pages/ProductList";
+import ProductForm from "./Pages/ProductForm";
+// Liste initiale des produits
+const products = [
+  {
+    id: 1,
+    name: "Laptop HP",
+    price: 7500,
+    category: "Informatique",
+    stock: 10,
+  },
+  {
+    id: 2,
+    name: "iPhone 15",
+    price: 9500,
+    category: "Téléphone",
+    stock: 5,
+  },
+  {
+    id: 3,
+    name: "Casque Sony",
+    price: 1200,
+    category: "Audio",
+    stock: 15,
+  },
+];
+  const initialState = {products};
+  // Reducer
+const productReducer = (state, action) => {
+  switch (action.type) {
+    // Ajouter un produit
+    case "ADD_PRODUCT":
+      let newProduct={ ...action.payload, id: Date.now() };
+      return {...state,products: [...state.products,newProduct]};
+      
+
+    // Modifier un produit
+    case "UPDATE_PRODUCT":
+      return {...state,products: state.products.map((product) =>
+        product.id === action.payload.id
+          ? action.payload
+          : product)};
+
+    // Supprimer un produit
+    case "DELETE_PRODUCT":
+      return {...state,products: state.products.filter(
+        (product) => product.id !== action.payload)};  
+
+    default:
+      return state;
+  }
+}
+
+const App = () => {
+  // State + dispatch
+  const [state, dispatch] = useReducer( productReducer,initialState);
+
+
+  return (
+    <BrowserRouter>
+      <Navbar />
+
+      
+        <Routes>
+
+          {/* Liste des produits */}
+          <Route
+            path="/"
+            element={
+              <ProductList products={state.products} dispatch={dispatch}
+              />
+            }
+          />
+
+          {/* Liste des produits */}
+          <Route
+            path="/products"
+            element={
+              <ProductList  products={state.products} dispatch={dispatch}
+              />
+            }
+          />
+
+          {/* Ajouter un produit */}
+          <Route
+            path="/products/add"
+            element={
+              <ProductForm
+                products={products}
+                dispatch={dispatch}
+              />
+            }
+          />
+
+          {/* Modifier un produit */}
+          <Route
+            path="/products/edit/:id"
+            element={
+              <ProductForm
+                products={products}
+                dispatch={dispatch}
+              />
+            }
+          />
+
+        </Routes>
+      
+    </BrowserRouter>
+  );
+}
+
+export default App;
