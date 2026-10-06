@@ -27,27 +27,33 @@ const products = [
     stock: 15,
   },
 ];
-  const initialState = {products};
+  const initialState = {products:products};
   // Reducer
-const productReducer = (state, action) => {
+const productReducer = (state, action) => {//action = {type: , payload: }
   switch (action.type) {
     // Ajouter un produit
-    case "ADD_PRODUCT":
-      let newProduct={ ...action.payload, id: Date.now() };
-      return {...state,products: [...state.products,newProduct]};
+    case "ADD":
+       console.log(action.payload);
+
+      const newState={...state,products:[...state.products,{...action.payload,id:Date.now()}]};
+      console.log('new State: => ',newState);
+      return newState;
       
 
     // Modifier un produit
     case "UPDATE_PRODUCT":
-      return {...state,products: state.products.map((product) =>
-        product.id === action.payload.id
-          ? action.payload
-          : product)};
+       let copy=[...state.products];
+      const newProd =copy.map(p=>p.id===action.payload.id?action.payload:p);
+      return {...state,products:newProd};
+     /* return {...state,products: state.products.map((product) => product.id === action.payload.id? action.payload: product)};*/
 
     // Supprimer un produit
     case "DELETE_PRODUCT":
-      return {...state,products: state.products.filter(
-        (product) => product.id !== action.payload)};  
+      copy=[...state.products];
+      let filtredCopy=copy.filter(p=>p.id!==action.payload);
+      return {...state,products:filtredCopy}
+     /* return {...state,products: state.products.filter(
+        (product) => product.id !== action.payload)};  */
 
     default:
       return state;

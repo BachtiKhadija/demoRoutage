@@ -1,25 +1,23 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
+//useNavigate => Location.href version react
+//useParams =>to get values from URL
 
 const FormProduct = ({ products, dispatch }) => { 
 
     //get value of variable id from url if exists
   // id type is string, so we need to convert it to number when comparing with product.id using === operator
-  const { id } = useParams();
+  const { id } = useParams();//id est de type string
   const navigate = useNavigate();
 
   const isEdit = id!==null? true : false;
 
   // Produit à modifier
-  const productToEdit = products.find(
-    (product) => product.id === Number(id) 
+  const productToEdit = products.find((product) => product.id === Number(id)
   );
-
+   console.log(productToEdit);
   // Valeurs initiales
-  const [formData, setFormData] = useState({ name: productToEdit.name? productToEdit.name : "",
-    price: productToEdit?.price || "",
-    category: productToEdit?.category || "",
-    stock: productToEdit?.stock || "",
+  const [formData, setFormData] = useState({ name: productToEdit? productToEdit.name : "",price: productToEdit?.price || "",category: productToEdit?.category || "",stock: productToEdit?.stock || "",
   });
 
   const [errors, setErrors] = useState({});
@@ -30,7 +28,7 @@ const FormProduct = ({ products, dispatch }) => {
 
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: value, //modifier uniquement la valeur de la clé dont le nom est la valur de la variable name
     });
   };
 
@@ -73,7 +71,7 @@ const FormProduct = ({ products, dispatch }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!validate()) {
+    if (validate()===false) {
       return;
     }
 
@@ -85,22 +83,18 @@ const FormProduct = ({ products, dispatch }) => {
     };
 
     // Modifier ou ajouter le produit
-    if (isEdit) {
+    if(isEdit===true){
+        let newVP={...product,id:Number(id)};
       dispatch({
         type: "UPDATE_PRODUCT",
-        payload: {
-          ...product,
-          id: productToEdit.id,
-        },
+        payload: newVP,
       });
-    } else {
-      dispatch({
-        type: "ADD_PRODUCT",
-        payload: product,
-      });
+    }else{
+       newVP={...product};
+      dispatch({type:"ADD",payload:newVP});
     }
 
-    navigate("/products");
+    navigate("/products"); //Location.href="/products"
   };
 
   return (
@@ -130,11 +124,11 @@ const FormProduct = ({ products, dispatch }) => {
                 className="form-control"
               />
 
-              {errors.name && (
+              {errors.name? (
                 <div className="text-danger">
                   {errors.name}
                 </div>
-              )}
+              ):""}
             </div>
 
             {/* PRIX */}
