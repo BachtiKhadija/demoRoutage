@@ -10,7 +10,8 @@ const FormProduct = ({ products, dispatch }) => {
   const { id } = useParams();//id est de type string
   const navigate = useNavigate();
 
-  const isEdit = id!==null? true : false;
+  //const isEdit = id!==undefined? true : false;
+  const isEdit=Boolean(id);
 
   // Produit à modifier
   const productToEdit = products.find((product) => product.id === Number(id)
@@ -90,7 +91,7 @@ const FormProduct = ({ products, dispatch }) => {
         payload: newVP,
       });
     }else{
-       newVP={...product};
+       let newVP={...product};
       dispatch({type:"ADD",payload:newVP});
     }
 
